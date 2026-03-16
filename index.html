@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BuildRSWIPE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --green:#6abf45;--green-dark:#3d7a1e;--green-bright:#7ed348;
+  --white:#ffffff;--off:#f5f5f0;--dark:#080c07;--dark2:#0e130c;--dark3:#141a12;
+  --muted:#777;--border:rgba(255,255,255,0.07);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Barlow',sans-serif;background:var(--dark);color:var(--white);overflow-x:hidden}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:#111}
+::-webkit-scrollbar-thumb{background:var(--green)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 4rem;height:70px;display:flex;align-items:center;justify-content:space-between;transition:all .4s}
+nav.scrolled{background:rgba(8,12,7,0.95);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;letter-spacing:4px;color:var(--white);text-decoration:none;text-transform:uppercase}
+.nav-logo span{color:var(--green)}
+.nav-links{display:flex;align-items:center;gap:2.5rem}
+.nav-links a{text-decoration:none;color:rgba(255,255,255,0.5);font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;transition:color .2s}
+.nav-links a:hover{color:var(--white)}
+.nav-actions{display:flex;gap:.75rem;align-items:center}
+.btn-ghost{padding:9px 22px;background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.25);border-radius:3px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;transition:.2s}
+.btn-ghost:hover{border-color:rgba(255,255,255,0.6)}
+.btn-solid{padding:9px 22px;background:var(--green);color:var(--dark);border:none;border-radius:3px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;transition:.2s}
+.btn-solid:hover{background:var(--green-bright);transform:translateY(-1px)}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding-bottom:100px}
+.hero-bg{position:absolute;inset:0;z-index:0;background:#060c05}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(106,191,69,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(106,191,69,0.035) 1px,transparent 1px);background-size:64px 64px}
+.hero-glow{position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(106,191,69,0.07) 0%,transparent 65%);pointer-events:none}
+.hero-glow2{position:absolute;top:60%;left:25%;width:400px;height:400px;background:radial-gradient(circle,rgba(106,191,69,0.04) 0%,transparent 70%);pointer-events:none}
+.hero-overlay{position:absolute;bottom:0;left:0;right:0;height:260px;background:linear-gradient(to top,var(--dark),transparent)}
+.hero-content{position:relative;z-index:2;padding:0 2rem;max-width:1100px;margin-top:70px}
+.hero-badge{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(106,191,69,0.25);background:rgba(106,191,69,0.06);border-radius:2px;padding:7px 18px;margin-bottom:2.5rem;font-size:11px;font-weight:600;letter-spacing:3.5px;text-transform:uppercase;color:var(--green);animation:fadeUp .7s ease both}
+.hero-badge::before,.hero-badge::after{content:'';width:16px;height:1px;background:rgba(106,191,69,0.5)}
+.hero-h1{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(80px,11vw,150px);line-height:.9;letter-spacing:-2px;text-transform:uppercase;animation:fadeUp .7s .08s ease both}
+.hero-h1 .line-white{color:var(--white)}
+.hero-h1 .line-green{color:var(--green);display:block;text-shadow:0 0 100px rgba(106,191,69,0.25)}
+.hero-p{font-size:17px;font-weight:300;color:rgba(255,255,255,0.5);line-height:1.75;max-width:520px;margin:2.25rem auto 3rem;letter-spacing:.2px;animation:fadeUp .7s .16s ease both}
+.hero-btns{display:flex;align-items:center;justify-content:center;gap:1rem;animation:fadeUp .7s .24s ease both;flex-wrap:wrap}
+.btn-hero-g{display:inline-flex;align-items:center;gap:10px;padding:17px 38px;background:var(--green);color:var(--dark);border:none;border-radius:3px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:.25s}
+.btn-hero-g:hover{background:var(--green-bright);transform:translateY(-2px);box-shadow:0 10px 36px rgba(106,191,69,0.3)}
+.btn-hero-w{display:inline-flex;align-items:center;gap:10px;padding:16px 38px;background:transparent;color:var(--white);border:1.5px solid rgba(255,255,255,0.3);border-radius:3px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:.25s}
+.btn-hero-w:hover{border-color:rgba(255,255,255,0.7);transform:translateY(-2px)}
+.hero-stats-bar{position:absolute;bottom:0;left:0;right:0;z-index:3;display:flex;justify-content:center;border-top:1px solid var(--border);animation:fadeUp .7s .4s ease both;background:rgba(8,12,7,0.6);backdrop-filter:blur(10px)}
+.hstat{flex:1;max-width:220px;padding:1.75rem 2rem;text-align:center;border-right:1px solid var(--border)}
+.hstat:last-child{border-right:none}
+.hstat-n{font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:900;color:var(--white);line-height:1}
+.hstat-l{font-size:11px;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;margin-top:5px}
+
+/* LOGO BADGE TOP */
+.logo-topbadge{position:absolute;top:100px;left:50%;transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:10px;background:rgba(8,12,7,0.75);border:1px solid rgba(255,255,255,0.1);padding:12px 20px;border-radius:5px;backdrop-filter:blur(16px);animation:fadeDown .7s ease both;white-space:nowrap}
+.ltb-sword{font-size:22px}
+.ltb-text{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;letter-spacing:3.5px;color:var(--white)}
+.ltb-text span{color:var(--green)}
+
+/* SECTIONS */
+.sec{padding:8rem 5rem}
+.sec-lbl{font-size:11px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--green);margin-bottom:.85rem}
+.sec-h{font-family:'Barlow Condensed',sans-serif;font-size:clamp(44px,5.5vw,76px);font-weight:900;text-transform:uppercase;line-height:.93;letter-spacing:-1px}
+.sec-h em{color:var(--green);font-style:normal}
+
+/* HOW IT WORKS */
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);margin-top:4.5rem;border:1px solid var(--border)}
+.how-step{padding:3.5rem 2.5rem;border-right:1px solid var(--border);background:var(--dark2);position:relative;overflow:hidden;transition:background .3s}
+.how-step:last-child{border-right:none}
+.how-step::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(106,191,69,0.04),transparent);opacity:0;transition:opacity .3s}
+.how-step:hover{background:var(--dark3)}
+.how-step:hover::after{opacity:1}
+.hs-n{font-family:'Barlow Condensed',sans-serif;font-size:96px;font-weight:900;color:rgba(106,191,69,0.06);line-height:1;margin-bottom:1.5rem;transition:color .3s}
+.how-step:hover .hs-n{color:rgba(106,191,69,0.12)}
+.hs-ico{font-size:30px;margin-bottom:.85rem;display:block}
+.hs-title{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:.75rem}
+.hs-desc{font-size:14px;color:rgba(255,255,255,0.45);line-height:1.8;font-weight:300}
+
+/* FEATURES */
+.feat-sec{padding:8rem 5rem;background:var(--dark2)}
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);margin-top:4.5rem;border:1px solid var(--border)}
+.feat{background:var(--dark2);padding:3rem;transition:background .3s;position:relative}
+.feat:hover{background:#101510}
+.feat.span2{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;background:linear-gradient(150deg,#0b160a,#09120a)}
+.feat-ico{width:46px;height:46px;border-radius:3px;background:rgba(106,191,69,0.08);border:1px solid rgba(106,191,69,0.18);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:1.75rem}
+.feat-t{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:.65rem}
+.feat-d{font-size:13.5px;color:rgba(255,255,255,0.45);line-height:1.8;font-weight:300}
+.feat-pills{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.25rem}
+.fpill{padding:4px 11px;border:1px solid rgba(106,191,69,0.2);border-radius:2px;font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(106,191,69,.75)}
+
+/* SWIPE DEMO */
+.swipdemo{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.75rem;max-width:300px}
+.sd-top{display:flex;align-items:center;gap:.85rem;margin-bottom:1.25rem}
+.sdav{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green-dark));display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:900;color:var(--dark);flex-shrink:0}
+.sdinf .sdn{font-weight:600;font-size:15px;margin-bottom:1px}
+.sdinf .sdm{font-size:11.5px;color:var(--muted)}
+.sdpct{margin-left:auto;background:rgba(106,191,69,0.1);border:1px solid rgba(106,191,69,0.25);border-radius:20px;padding:4px 12px;font-size:11.5px;font-weight:700;color:var(--green);white-space:nowrap}
+.sdtags{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.sdtag{padding:3px 9px;background:rgba(255,255,255,0.04);border-radius:2px;font-size:10.5px;color:rgba(255,255,255,0.5);letter-spacing:.5px}
+.sdbtns{display:flex;align-items:center;gap:.65rem;justify-content:center}
+.sdno{width:50px;height:50px;border-radius:50%;border:1.5px solid rgba(239,83,80,0.35);background:transparent;color:#ef5350;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.sdno:hover{background:rgba(239,83,80,0.08)}
+.sdyes{width:62px;height:62px;border-radius:50%;background:var(--green);border:none;color:var(--dark);font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;box-shadow:0 4px 24px rgba(106,191,69,.3)}
+.sdyes:hover{background:var(--green-bright);transform:scale(1.06)}
+.sdstar{width:50px;height:50px;border-radius:50%;border:1.5px solid rgba(255,213,79,0.35);background:transparent;color:#ffd54f;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.sdstar:hover{background:rgba(255,213,79,0.08)}
+
+/* MARQUEE */
+.mrq-sec{padding:6rem 0;overflow:hidden;position:relative}
+.mrq-sec::before,.mrq-sec::after{content:'';position:absolute;top:0;bottom:0;width:180px;z-index:2;pointer-events:none}
+.mrq-sec::before{left:0;background:linear-gradient(90deg,var(--dark),transparent)}
+.mrq-sec::after{right:0;background:linear-gradient(-90deg,var(--dark),transparent)}
+.mrq-label{text-align:center;margin-bottom:1rem}
+.mrq-track{display:flex;gap:1.25rem;animation:mrqanim 35s linear infinite;width:max-content}
+.mrq-track:hover{animation-play-state:paused}
+.pcard{flex-shrink:0;width:240px;background:var(--dark2);border:1px solid var(--border);border-radius:8px;overflow:hidden;transition:border-color .25s,transform .25s}
+.pcard:hover{border-color:rgba(106,191,69,0.35);transform:translateY(-4px)}
+.pcbanner{height:80px}
+.pcav{width:50px;height:50px;border-radius:50%;border:3px solid var(--dark2);position:absolute;bottom:-25px;left:1.1rem;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:900;color:var(--dark)}
+.pcwrap{position:relative}
+.pcbody{padding:1.85rem 1.1rem 1.1rem}
+.pcname{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:.3px;margin-bottom:2px}
+.pcsub{font-size:11.5px;color:var(--muted);margin-bottom:.85rem}
+.pctags{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.85rem}
+.pctag{padding:2px 7px;border-radius:2px;border:1px solid rgba(255,255,255,0.08);font-size:10px;letter-spacing:.3px;color:rgba(255,255,255,.45);font-weight:500}
+.pcpct{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;color:var(--green)}
+.pcv{font-size:10px;color:rgba(106,191,69,.6);letter-spacing:.5px}
+
+/* COMMUNITY */
+.comm-sec{padding:8rem 5rem;background:var(--dark2)}
+.comm-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-top:4.5rem}
+.post{background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:1.75rem;transition:border-color .25s}
+.post:hover{border-color:rgba(106,191,69,0.25)}
+.post-head{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem}
+.pav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:900;color:var(--dark);flex-shrink:0}
+.pname{font-weight:600;font-size:13px}
+.ptime{font-size:11px;color:var(--muted)}
+.ptext{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.75;margin-bottom:1rem;font-weight:300}
+.pfoot{display:flex;gap:1.25rem;padding-top:.75rem;border-top:1px solid var(--border)}
+.pfbtn{font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'Barlow',sans-serif;display:flex;align-items:center;gap:.35rem;transition:color .2s}
+.pfbtn:hover{color:var(--green)}
+.highlight{grid-column:span 2;background:linear-gradient(150deg,rgba(106,191,69,0.07),rgba(106,191,69,0.02));border-color:rgba(106,191,69,0.15);display:flex;gap:2rem;align-items:center}
+.big-stat{font-family:'Barlow Condensed',sans-serif;font-size:88px;font-weight:900;line-height:1;color:var(--green);flex-shrink:0}
+.hl-title{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:.65rem}
+.hl-desc{font-size:13.5px;color:rgba(255,255,255,.45);line-height:1.75;font-weight:300}
+
+/* CTA */
+.cta-sec{position:relative;padding:11rem 5rem;text-align:center;overflow:hidden}
+.cta-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(106,191,69,0.1) 0%,transparent 65%)}
+.cta-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(106,191,69,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(106,191,69,0.03) 1px,transparent 1px);background-size:56px 56px}
+.cta-inner{position:relative;z-index:1;max-width:820px;margin:0 auto}
+.cta-lbl{font-size:11px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--green);margin-bottom:1.5rem}
+.cta-h{font-family:'Barlow Condensed',sans-serif;font-size:clamp(56px,8vw,110px);font-weight:900;text-transform:uppercase;line-height:.9;letter-spacing:-1.5px;margin-bottom:2rem}
+.cta-h em{color:var(--green);font-style:normal}
+.cta-sub{font-size:16px;color:rgba(255,255,255,0.45);line-height:1.8;margin-bottom:3.5rem;font-weight:300;max-width:540px;margin-left:auto;margin-right:auto}
+.btn-cta-w{display:inline-flex;align-items:center;gap:12px;padding:19px 52px;background:var(--white);color:var(--dark);border:none;border-radius:3px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:.25s}
+.btn-cta-w:hover{background:var(--off);transform:translateY(-2px);box-shadow:0 14px 48px rgba(255,255,255,0.08)}
+.cta-note{font-size:11.5px;color:rgba(255,255,255,0.25);margin-top:1.5rem;letter-spacing:1.5px;text-transform:uppercase}
+
+/* FOOTER */
+footer{background:var(--dark2);border-top:1px solid var(--border);padding:4.5rem 5rem 2.5rem}
+.footer-top{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:4rem;margin-bottom:4rem}
+.fb-name{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;letter-spacing:4px;margin-bottom:1rem}
+.fb-name span{color:var(--green)}
+.fb-desc{font-size:13px;color:var(--muted);line-height:1.8;max-width:270px}
+.fc h4{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:1.25rem}
+.fc a{display:block;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:.6rem;transition:color .2s}
+.fc a:hover{color:var(--white)}
+.footer-bot{display:flex;justify-content:space-between;align-items:center;padding-top:2rem;border-top:1px solid var(--border)}
+.footer-bot p{font-size:11.5px;color:rgba(255,255,255,0.2);letter-spacing:.5px}
+.socials{display:flex;gap:.75rem}
+.sbtn{width:34px;height:34px;border-radius:3px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;transition:border-color .2s,background .2s;color:rgba(255,255,255,0.5);font-weight:600}
+.sbtn:hover{border-color:rgba(106,191,69,0.5);background:rgba(106,191,69,0.07);color:var(--green)}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(120px);background:var(--dark3);border:1px solid rgba(106,191,69,0.35);color:var(--white);padding:1.1rem 1.75rem;border-radius:6px;z-index:9999;display:flex;align-items:center;gap:1rem;transition:transform .4s cubic-bezier(.17,.67,.25,1.2);box-shadow:0 8px 40px rgba(0,0,0,.6);pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast-ico{color:var(--green);font-size:22px}
+.toast-lbl{font-size:10.5px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:2px;font-family:'Barlow Condensed',sans-serif}
+.toast-msg{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;letter-spacing:.5px}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(36px);transition:opacity .75s ease,transform .75s ease}
+.rv.on{opacity:1;transform:translateY(0)}
+.rv1{transition-delay:.1s}.rv2{transition-delay:.2s}.rv3{transition-delay:.3s}
+
+/* ANIMS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeDown{from{opacity:0;transform:translate(-50%,-20px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes mrqanim{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* RESPONSIVE */
+@media(max-width:1024px){nav{padding:0 2rem}.sec,.feat-sec,.comm-sec,.cta-sec{padding:5rem 2rem}footer{padding:3rem 2rem 2rem}.footer-top{grid-template-columns:1fr 1fr;gap:2.5rem}}
+@media(max-width:768px){.nav-links,.nav-actions{display:none}.how-grid{grid-template-columns:1fr}.feat-grid{grid-template-columns:1fr}.feat.span2{grid-column:span 1;grid-template-columns:1fr}.comm-grid{grid-template-columns:1fr}.highlight{grid-column:span 1;flex-direction:column}.hstat{padding:1.25rem 1rem}.footer-top{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-logo" href="#">BUILDR<span>SWIPE</span></a>
+  <div class="nav-links">
+    <a href="#how">How It Works</a>
+    <a href="#features">Features</a>
+    <a href="#community">Community</a>
+    <a href="#safety">Safety</a>
+  </div>
+  <div class="nav-actions">
+    <button class="btn-ghost">Log In</button>
+    <button class="btn-solid">Join Free</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-overlay"></div>
+
+
+
+  <div class="hero-content">
+    <div class="hero-badge">Fitness Partner Matching Platform</div>
+    <h1 class="hero-h1">
+      <span class="line-white">Never Train</span>
+      <span class="line-green">Alone Again</span>
+    </h1>
+    <p class="hero-p">Swipe. Match. Lift. 
+        <br>Find your perfect gym partner based on goals, schedule, and location. Built for warriors who train together.</p>
+    <div class="hero-btns">
+      <button class="btn-hero-g" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">
+        Join The Legion
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <button class="btn-hero-w" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">
+        See How It Works
+      </button>
+    </div>
+  </div>
+
+  
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="sec" id="how">
+  <div class="rv">
+    <div class="sec-lbl">The Process</div>
+    <h2 class="sec-h">How It<br><em>Works</em></h2>
+  </div>
+  <div class="how-grid">
+    <div class="how-step rv rv1">
+      <div class="hs-n">01</div>
+      <span class="hs-ico"></span>
+      <div class="hs-title">Build Your Profile</div>
+      <div class="hs-desc">Set your training goals, experience level, preferred schedule, and home gym. Your warrior identity starts here.</div>
+    </div>
+    <div class="how-step rv rv2">
+      <div class="hs-n">02</div>
+      <span class="hs-ico"></span>
+      <div class="hs-title">Swipe & Match</div>
+      <div class="hs-desc">Our algorithm surfaces compatible partners nearby. Swipe right to connect, left to pass. It's that simple.</div>
+    </div>
+    <div class="how-step rv rv3">
+      <div class="hs-n">03</div>
+      <span class="hs-ico"></span>
+      <div class="hs-title">Train Together</div>
+      <div class="hs-desc">Schedule sessions, coordinate in chat, track streaks together. Accountability becomes automatic.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="feat-sec" id="features">
+  <div class="rv">
+    <div class="sec-lbl">Platform Features</div>
+    <h2 class="sec-h">Built For<br><em>Serious Athletes</em></h2>
+  </div>
+  <div class="feat-grid">
+    <div class="feat span2 rv">
+      <div>
+        <div class="feat-ico">⚡</div>
+        <div class="feat-t">Smart Swipe Matching</div>
+        <div class="feat-d">Our compatibility engine scores partners across 12 dimensions — training type, schedule, proximity, experience, and consistency habits. You only see your highest potential matches.</div>
+        <div class="feat-pills">
+          <span class="fpill">AI Matching</span>
+          <span class="fpill">Proximity Filter</span>
+          <span class="fpill">Goal Alignment</span>
+          <span class="fpill">12 Dimensions</span>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:center">
+        <div class="swipdemo">
+          <div class="sd-top">
+            <div class="sdav">MR</div>
+            <div class="sdinf">
+              <div class="sdn">Kartikey K.</div>
+              <div class="sdm">0.8 km · Iron Temple</div>
+            </div>
+            <div class="sdpct">94% Match</div>
+          </div>
+          <div class="sdtags">
+            <span class="sdtag">Bodybuilding</span>
+            <span class="sdtag">5AM Club</span>
+            <span class="sdtag">Advanced</span>
+            <span class="sdtag">Mon–Fri</span>
+          </div>
+          <div class="sdbtns">
+            <button class="sdno">✕</button>
+            <button class="sdstar">⭐</button>
+            <button class="sdyes" onclick="showToast()">⚡</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="feat rv rv1">
+      <div class="feat-ico">💬</div>
+      <div class="feat-t">Workout Coordination</div>
+      <div class="feat-d">Built-in chat with session scheduling, workout invites, and streak tracking. Coordinate everything without leaving the app.</div>
+      <div class="feat-pills"><span class="fpill">Chat</span><span class="fpill">Invites</span><span class="fpill">Scheduling</span></div>
+    </div>
+    <div class="feat rv rv2">
+      <div class="feat-ico">🔥</div>
+      <div class="feat-t">Streak Accountability</div>
+      <div class="feat-d">Track shared training streaks with your partners. Miss a session — both of you know. Discipline through radical transparency.</div>
+      <div class="feat-pills"><span class="fpill">Shared Streaks</span><span class="fpill">Check-Ins</span></div>
+    </div>
+    <div class="feat rv rv1">
+      <div class="feat-ico">🏅</div>
+      <div class="feat-t">Spartan Challenges</div>
+      <div class="feat-d">Weekly and monthly community challenges. Climb leaderboards. Earn warrior badges. Compete city-wide.</div>
+      <div class="feat-pills"><span class="fpill">Leaderboards</span><span class="fpill">Badges</span></div>
+    </div>
+    <div class="feat rv rv2">
+      <div class="feat-ico">✅</div>
+      <div class="feat-t">Verified Profiles</div>
+      <div class="feat-d">Phone, email, and gym membership verification. Optional ID for Gold Verified status. Every warrior is real.</div>
+      <div class="feat-pills"><span class="fpill">ID Verified</span><span class="fpill">Gym Linked</span></div>
+    </div>
+  </div>
+  <div class="feat rv rv2">
+    <div class="feat-ico"></div>
+    <div class="feat-t" >AND MANY MORE......</div>
+    
+  </div>
+</div>
+</section>
+
+<!-- PROFILES MARQUEE -->
+<section class="mrq-sec">
+  <div class="mrq-label rv">
+    <div class="sec-lbl" style="display:inline-block">Warriors Near You</div>
+  </div>
+  <div style="overflow:hidden;padding:2rem 0">
+    <div class="mrq-track" id="mt">
+      <!-- 6 cards x2 for seamless loop -->
+      <div class="pcard"><div class="pcwrap"><div class="pcbanner" style="background:linear-gradient(135deg,#152b0b,#2e6614)"></div><div class="pcav" style="background:linear-gradient(135deg,#6abf45,#3d7a1e)">MR</div></div><div class="pcbody"><div class="pcname">Marcus R., 26</div><div class="pcsub">📍 0.8 km · Iron Temple</div><div class="pctags"><span class="pctag">Bodybuilding</span><span class="pctag">5AM</span><span class="pctag">Advanced</span></div><div class="pcpct">⚡ 94% MATCH &nbsp;<span class="pcv">✓ VERIFIED</span></div></div></div>
+      <div class="pcard"><div class="pcwrap"><div class="pcbanner" style="background:linear-gradient(135deg,#0b1f2e,#1a4d6e)"></div><div class="pcav" style="background:linear-gradient(135deg,#45a0bf,#1e5a7a)">PK</div></div><div class="pcbody"><div class="pcname">Priya K., 24</div><div class="pcsub">📍 1.5 km · FitZone</div><div class="pctags"><span class="pctag">CrossFit</span><span class="pctag">HIIT</span><span class="pctag">Inter.</span></div><div class="pcpct">⚡ 88% MATCH &nbsp;<span class="pcv">✓ VERIFIED</span></div></div></div>
+      <div class="pcard"><div class="pcwrap"><div class="pcbanner" style="background:linear-gradient(135deg,#2e1208,#6b2c10)"></div><div class="pcav" style="background:linear-gradient(135deg,#bf6a45,#7a3d1e)">TW</div></div><div class="pcbody"><div class="pcname">Tom W., 29</div><div class="pcsub">📍 2.1 km · Iron Temple</div><div class="pctags"><span class="pctag">Powerlifting</span><span class="pctag">Strength</span></div><div class="pcpct">⚡ 82% MATCH &nbsp;<span class="pcv">✓ VERIFIED</span></div></div></div>
+      <div class="pcard"><div class="pcwrap"><div class="pcbanner" style="background:linear-gradient(135deg,#1e0b2e,#4a1a6b)"></div><div class="pcav" style="background:linear-gradient(135deg,#a045bf,#5a1e7a)">SA</div></div><div class="pcbody"><div class="pcname">Sara A., 22</div><div class="pcsub">📍 1.1 km · Gold's Gym</div><div class="pctags"><span class="pctag">Fat Loss</span><span class="pctag">Evening</span><span class="pctag">Beginner</span></div><div class="pcpct">⚡ 79% MATCH</div></div></div>
+      <div class="pcard"><div class="pcwrap"><div class="pcbanner" style="background:linear-gradient(135deg,#0b2e1f,#1a6b4a)"></div><div class="pcav" style="background:linear-gradient(135deg,#45bf9a,#1e7a5a)">RJ</div></div><div class="pcbody"><div class="pcname">Raj J., 31</div><div class="pcsub">📍 3.0 km · Anytime</div><div class="pctags"><span class="pctag">Calisthenics</span><span class="pctag">Morning</span></div><div class="pcpct">⚡ 77% MATCH &nbsp;<span class="pcv">✓ VERIFIED</span></div></div></div>
+      <div class="pcard"><div class="pcwrap"><div class="pcbanner" style="background:linear-gradient(135deg,#2e250b,#6b591a)"></div><div class="pcav" style="background:linear-gradient(135deg,#bfa045,#7a5a1e)">AV</div></div><div class="pcbody"><div class="pcname">Anika V., 27</div><div class="pcsub">📍 2.4 km · Planet Fitness</div><div class="pctags"><span class="pctag">Functional</span><span class="pctag">Yoga</span></div><div class="pcpct">⚡ 75% MATCH</div></div></div>
+      <!-- duplicate -->
+      <div class="pcard"><div class="pcwrap"><div class="pcbanner" style="background:linear-gradient(135deg,#152b0b,#2e6614)"></div><div class="pcav" style="background:linear-gradient(135deg,#6abf45,#3d7a1e)">MR</div></div><div class="pcbody"><div class="pcname">Marcus R., 26</div><div class="pcsub">📍 0.8 km · Iron Temple</div><div class="pctags"><span class="pctag">Bodybuilding</span><span class="pctag">5AM</span><span class="pctag">Advanced</span></div><div class="pcpct">⚡ 94% MATCH &nbsp;<span class="pcv">✓ VERIFIED</span></div></div></div>
+      <div class="pcard"><div class="pcwrap"><div class="pcbanner" style="background:linear-gradient(135deg,#0b1f2e,#1a4d6e)"></div><div class="pcav" style="background:linear-gradient(135deg,#45a0bf,#1e5a7a)">PK</div></div><div class="pcbody"><div class="pcname">Priya K., 24</div><div class="pcsub">📍 1.5 km · FitZone</div><div class="pctags"><span class="pctag">CrossFit</span><span class="pctag">HIIT</span><span class="pctag">Inter.</span></div><div class="pcpct">⚡ 88% MATCH &nbsp;<span class="pcv">✓ VERIFIED</span></div></div></div>
+      <div class="pcard"><div class="pcwrap"><div class="pcbanner" style="background:linear-gradient(135deg,#2e1208,#6b2c10)"></div><div class="pcav" style="background:linear-gradient(135deg,#bf6a45,#7a3d1e)">TW</div></div><div class="pcbody"><div class="pcname">Tom W., 29</div><div class="pcsub">📍 2.1 km · Iron Temple</div><div class="pctags"><span class="pctag">Powerlifting</span><span class="pctag">Strength</span></div><div class="pcpct">⚡ 82% MATCH &nbsp;<span class="pcv">✓ VERIFIED</span></div></div></div>
+      <div class="pcard"><div class="pcwrap"><div class="pcbanner" style="background:linear-gradient(135deg,#1e0b2e,#4a1a6b)"></div><div class="pcav" style="background:linear-gradient(135deg,#a045bf,#5a1e7a)">SA</div></div><div class="pcbody"><div class="pcname">Sara A., 22</div><div class="pcsub">📍 1.1 km · Gold's Gym</div><div class="pctags"><span class="pctag">Fat Loss</span><span class="pctag">Evening</span><span class="pctag">Beginner</span></div><div class="pcpct">⚡ 79% MATCH</div></div></div>
+      <div class="pcard"><div class="pcwrap"><div class="pcbanner" style="background:linear-gradient(135deg,#0b2e1f,#1a6b4a)"></div><div class="pcav" style="background:linear-gradient(135deg,#45bf9a,#1e7a5a)">RJ</div></div><div class="pcbody"><div class="pcname">Raj J., 31</div><div class="pcsub">📍 3.0 km · Anytime</div><div class="pctags"><span class="pctag">Calisthenics</span><span class="pctag">Morning</span></div><div class="pcpct">⚡ 77% MATCH &nbsp;<span class="pcv">✓ VERIFIED</span></div></div></div>
+      <div class="pcard"><div class="pcwrap"><div class="pcbanner" style="background:linear-gradient(135deg,#2e250b,#6b591a)"></div><div class="pcav" style="background:linear-gradient(135deg,#bfa045,#7a5a1e)">AV</div></div><div class="pcbody"><div class="pcname">Anika V., 27</div><div class="pcsub">📍 2.4 km · Planet Fitness</div><div class="pctags"><span class="pctag">Functional</span><span class="pctag">Yoga</span></div><div class="pcpct">⚡ 75% MATCH</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section class="comm-sec" id="community">
+  <div class="rv" style="max-width:560px">
+    <div class="sec-lbl">Community</div>
+    <h2 class="sec-h">Warriors<br><em>Lifting Together</em></h2>
+  </div>
+  <div class="comm-grid">
+    <div class="post highlight rv">
+      <div class="big-stat">7K+</div>
+      <div>
+        <div class="hl-title">PRs Hit This Month</div>
+        <div class="hl-desc">Warriors with a BuildrSwipe partner are 3.4× more likely to hit a personal record within 90 days. Accountability is the missing variable.</div>
+      </div>
+    </div>
+    <div class="post rv rv1">
+      <div class="post-head">
+        <div class="pav" style="background:linear-gradient(135deg,#6abf45,#3d7a1e)">MR</div>
+        <div><div class="pname">Marcus Rivera <span style="color:var(--green);font-size:10px;letter-spacing:1px"> ⚔ ELITE</span></div><div class="ptime">2 hours ago</div></div>
+      </div>
+      <div class="ptext">Finally hit 200kg squat today with Tom spotting. 6 months of consistent 5am sessions. Never would've pushed this hard alone. Who else hit a PR this week? 🏆</div>
+      <div class="pfoot">
+        <button class="pfbtn" onclick="this.style.color='var(--green)'">❤ 142</button>
+        <button class="pfbtn">💬 38</button>
+        <button class="pfbtn">↗ Share</button>
+      </div>
+    </div>
+    <div class="post rv rv2">
+      <div class="post-head">
+        <div class="pav" style="background:linear-gradient(135deg,#45a0bf,#1e5a7a)">PK</div>
+        <div><div class="pname">Priya Kapoor</div><div class="ptime">5 hours ago</div></div>
+      </div>
+      <div class="ptext">Week 3 of Spartan Challenge — down 4kg, feeling stronger than ever. Ananya checks in every morning. BuildrSwipe matched us perfectly 💪</div>
+      <div class="pfoot">
+        <button class="pfbtn" onclick="this.style.color='var(--green)'">❤ 89</button>
+        <button class="pfbtn">💬 21</button>
+        <button class="pfbtn">↗ Share</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SAFETY -->
+<section class="sec" id="safety">
+  <div class="rv">
+    <div class="sec-lbl">Trust & Safety</div>
+    <h2 class="sec-h">Built On<br><em>Trust</em></h2>
+  </div>
+  <div class="how-grid" style="margin-top:4rem">
+    <div class="how-step rv rv1">
+      <span class="hs-ico">✅</span>
+      <div class="hs-title">Verified Profiles</div>
+      <div class="hs-desc">Every user verifies via phone and email. Gym membership linking adds a layer of authenticity. ID verification for Gold badge.</div>
+    </div>
+    <div class="how-step rv rv2">
+      <span class="hs-ico">🔒</span>
+      <div class="hs-title">Private Location</div>
+      <div class="hs-desc">We show distance only — never your exact address. You control exactly what information is visible to others.</div>
+    </div>
+    <div class="how-step rv rv3">
+      <span class="hs-ico">🛡️</span>
+      <div class="hs-title">Spartan Code</div>
+      <div class="hs-desc">Zero tolerance for harassment. Moderation team responds in 24 hours. Violations result in permanent bans. No exceptions.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-sec">
+  <div class="cta-bg"></div>
+  <div class="cta-grid"></div>
+  <div class="cta-inner rv">
+    <div class="cta-lbl">Ready to Start?</div>
+    <h2 class="cta-h">Find Your<br><em>Training Partner</em></h2>
+    <p class="cta-sub">Join thousands of warriors building discipline, strength, and brotherhood — one rep at a time.</p>
+    <button class="btn-cta-w">
+      Get Started Free
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <div class="cta-note">Available everywhere</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="fb-name">BUILDR<span>SWIPE</span></div>
+      <p class="fb-desc">The fitness partner matching platform built for people who take training seriously. Find your partner. Build your legacy.</p>
+    </div>
+    <div class="fc">
+      <h4>Platform</h4>
+      <a href="#">Features</a>
+      <a href="#">How It Works</a>
+      <a href="#">Pricing</a>
+      <a href="#">For Gyms</a>
+    </div>
+    <div class="fc">
+      <h4>Community</h4>
+      <a href="#">Spartan Challenges</a>
+      <a href="#">Leaderboards</a>
+      <a href="#">Success Stories</a>
+      <a href="#">Blog</a>
+    </div>
+    <div class="fc">
+      <h4>Support</h4>
+      <a href="#">Help Center</a>
+      <a href="#">Safety</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+    </div>
+  </div>
+  <div class="footer-bot">
+    <p>© 2026 BuildrSwipe. All rights reserved.</p>
+    <div class="socials">
+      <div class="sbtn">𝕏</div>
+      <div class="sbtn">in</div>
+      <div class="sbtn">▶</div>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-ico">⚡</span>
+  <div>
+    <div class="toast-lbl">It's a Match!</div>
+    <div class="toast-msg">You and Marcus are connected</div>
+  </div>
+</div>
+
+<script>
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled',window.scrollY>60)
+});
+
+const ro=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')})
+},{threshold:.08});
+document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
+
+function showToast(){
+  const t=document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+</script>
+</body>
+</html>
