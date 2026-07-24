@@ -3,6 +3,4 @@
 ## 🚀 Development Status
 
 Current update:
-<!--STATUS_START-->
-📝 Initial setup
-<!--STATUS_END-->
+<!--STATUS_START-->📝 Documentation updated<!--STATUS_END-->
