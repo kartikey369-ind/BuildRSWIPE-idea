@@ -1,4 +1,4 @@
-name: Update README
+name: Daily README Update
 
 on:
   schedule:
@@ -15,10 +15,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Update README
+      - name: Update status
         run: |
-          DATE=$(date -u)
-          sed -i "s|Last updated:.*|Last updated: $DATE UTC|" README.md
+          STATUSES=(
+            "📝 Documentation updated"
+            "🔧 Project maintenance"
+            "♻️ Codebase cleanup"
+            "📚 README improvements"
+            "⚡ Performance review"
+            "🧹 Repository housekeeping"
+            "🔍 Reviewing project structure"
+            "📦 Dependency audit"
+            "✨ Minor improvements"
+            "🚀 Continuous development"
+            "🛠️ Internal refactoring"
+            "✅ Quality checks completed"
+          )
+
+          RANDOM_STATUS=${STATUSES[$RANDOM % ${#STATUSES[@]}]}
+
+          sed -i "/<!--STATUS_START-->/,/<!--STATUS_END-->/c\\<!--STATUS_START-->\\${RANDOM_STATUS}\\<!--STATUS_END-->" README.md
 
       - name: Commit changes
         run: |
@@ -30,6 +46,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes"
           else
-            git commit -m "docs: update README"
+            git commit -m "docs: daily project update"
             git push
           fi
